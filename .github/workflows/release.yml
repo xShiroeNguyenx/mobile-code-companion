@@ -56,6 +56,9 @@ jobs:
       OVSX_PAT: ${{ secrets.OVSX_PAT }}
     strategy:
       fail-fast: false
+      # Publish tuần tự: lần publish đầu tiên, các job song song cùng "tạo mới extension"
+      # trên Marketplace → job đến sau bị "The extension already exists".
+      max-parallel: 1
       matrix:
         include:
           - target: win32-x64
