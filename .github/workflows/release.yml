@@ -50,6 +50,10 @@ jobs:
   package:
     needs: test
     runs-on: ubuntu-latest
+    # secrets không dùng được trong `if` của step — map vào env cấp job rồi check env
+    env:
+      VSCE_PAT: ${{ secrets.VSCE_PAT }}
+      OVSX_PAT: ${{ secrets.OVSX_PAT }}
     strategy:
       fail-fast: false
       matrix:
@@ -94,16 +98,12 @@ jobs:
         run: npx vsce package --target ${{ matrix.target }} --out ../mobile-code-companion-${{ github.ref_name }}-${{ matrix.target }}.vsix
 
       - name: Publish to Marketplace
-        if: ${{ secrets.VSCE_PAT != '' }}
-        env:
-          VSCE_PAT: ${{ secrets.VSCE_PAT }}
+        if: ${{ env.VSCE_PAT != '' }}
         working-directory: extension
         run: npx vsce publish --packagePath ../mobile-code-companion-${{ github.ref_name }}-${{ matrix.target }}.vsix
 
       - name: Publish to Open VSX
-        if: ${{ secrets.OVSX_PAT != '' }}
-        env:
-          OVSX_PAT: ${{ secrets.OVSX_PAT }}
+        if: ${{ env.OVSX_PAT != '' }}
         working-directory: extension
         run: npx ovsx publish ../mobile-code-companion-${{ github.ref_name }}-${{ matrix.target }}.vsix
 
