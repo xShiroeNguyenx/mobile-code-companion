@@ -1,0 +1,16 @@
+{
+  "name": "mobile-code-companion-workspace",
+  "private": true,
+  "version": "0.1.0",
+  "description": "Control VS Code + Claude Code from your phone. Monorepo root: build orchestration only (no npm workspaces, so vsce packaging stays simple).",
+  "scripts": {
+    "install:all": "npm --prefix extension install && npm --prefix webapp install",
+    "build:webapp": "npm --prefix webapp run build",
+    "copy:webapp": "node scripts/copy-webapp.js",
+    "build:extension": "npm --prefix extension run build",
+    "typecheck": "npm --prefix extension run typecheck && npm --prefix webapp run typecheck",
+    "test": "npm --prefix extension run test",
+    "build": "npm run build:webapp && npm run copy:webapp && npm run build:extension",
+    "package": "npm run build && npm --prefix extension run package"
+  }
+}

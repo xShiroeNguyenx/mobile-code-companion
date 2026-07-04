@@ -1,0 +1,173 @@
+{
+  "name": "mobile-code-companion",
+  "displayName": "Mobile Code Companion",
+  "description": "Control VS Code and your Claude Code agent from your phone: watch the chat, approve permissions, answer questions, and send prompts remotely.",
+  "version": "0.1.0",
+  "publisher": "shiroenguyen",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/xShiroeNguyenx/mobile-code-companion.git"
+  },
+  "bugs": {
+    "url": "https://github.com/xShiroeNguyenx/mobile-code-companion/issues"
+  },
+  "homepage": "https://github.com/xShiroeNguyenx/mobile-code-companion#readme",
+  "icon": "media/icon.png",
+  "galleryBanner": {
+    "color": "#14161B",
+    "theme": "dark"
+  },
+  "engines": {
+    "vscode": "^1.90.0"
+  },
+  "categories": [
+    "AI",
+    "Other"
+  ],
+  "keywords": [
+    "claude",
+    "claude-code",
+    "remote",
+    "mobile",
+    "agent"
+  ],
+  "main": "./dist/extension.js",
+  "activationEvents": [
+    "onStartupFinished"
+  ],
+  "contributes": {
+    "commands": [
+      {
+        "command": "mobileCompanion.start",
+        "title": "Mobile Companion: Start Server"
+      },
+      {
+        "command": "mobileCompanion.stop",
+        "title": "Mobile Companion: Stop Server"
+      },
+      {
+        "command": "mobileCompanion.showPanel",
+        "title": "Mobile Companion: Show Pairing Panel"
+      },
+      {
+        "command": "mobileCompanion.copyUrl",
+        "title": "Mobile Companion: Copy Pairing URL"
+      },
+      {
+        "command": "mobileCompanion.regenerateToken",
+        "title": "Mobile Companion: Regenerate Pairing Token"
+      },
+      {
+        "command": "mobileCompanion.newSession",
+        "title": "Mobile Companion: New Hosted Claude Session"
+      },
+      {
+        "command": "mobileCompanion.installHooks",
+        "title": "Mobile Companion: Install Claude Code Hooks (Companion Mode)"
+      },
+      {
+        "command": "mobileCompanion.uninstallHooks",
+        "title": "Mobile Companion: Uninstall Claude Code Hooks"
+      }
+    ],
+    "configuration": {
+      "title": "Mobile Code Companion",
+      "properties": {
+        "mobileCompanion.port": {
+          "type": "number",
+          "default": 7777,
+          "description": "HTTP/WebSocket port for the phone to connect to."
+        },
+        "mobileCompanion.bindHost": {
+          "type": "string",
+          "default": "0.0.0.0",
+          "description": "Interface to bind. Use 127.0.0.1 to disable LAN access (tunnel-only setups)."
+        },
+        "mobileCompanion.autoStart": {
+          "type": "boolean",
+          "default": false,
+          "description": "Start the companion server automatically when VS Code opens."
+        },
+        "mobileCompanion.approvalTimeoutSeconds": {
+          "type": "number",
+          "default": 300,
+          "description": "How long a hosted-session permission request waits for an answer before the default action applies."
+        },
+        "mobileCompanion.approvalTimeoutAction": {
+          "type": "string",
+          "enum": [
+            "deny",
+            "allow"
+          ],
+          "default": "deny",
+          "description": "What happens when a hosted-session approval times out."
+        },
+        "mobileCompanion.hookApprovalTimeoutSeconds": {
+          "type": "number",
+          "default": 120,
+          "description": "How long a hook-forwarded permission request (official panel / terminal CLI session) waits before falling back to the normal desktop dialog."
+        },
+        "mobileCompanion.askUserQuestionStrategy": {
+          "type": "string",
+          "enum": [
+            "updatedInput",
+            "denyWithAnswer"
+          ],
+          "default": "updatedInput",
+          "description": "How phone answers are fed back to AskUserQuestion. updatedInput is the documented SDK path; denyWithAnswer is a version-proof fallback."
+        },
+        "mobileCompanion.defaultPermissionMode": {
+          "type": "string",
+          "enum": [
+            "default",
+            "acceptEdits",
+            "plan",
+            "bypassPermissions"
+          ],
+          "default": "default",
+          "description": "Permission mode for new hosted sessions."
+        },
+        "mobileCompanion.model": {
+          "type": "string",
+          "default": "",
+          "description": "Optional model override for hosted sessions (empty = Claude Code default)."
+        },
+        "mobileCompanion.historyLimit": {
+          "type": "number",
+          "default": 200,
+          "description": "Messages kept per session for reconnect snapshots."
+        },
+        "mobileCompanion.ntfyUrl": {
+          "type": "string",
+          "default": "",
+          "description": "Optional ntfy topic URL (e.g. https://ntfy.sh/my-topic) used to push notifications even when the web app is closed."
+        }
+      }
+    }
+  },
+  "scripts": {
+    "build": "node esbuild.js",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "package": "vsce package --target win32-x64 -o ../mobile-code-companion-%npm_package_version%-win32-x64.vsix",
+    "publish:vsce": "vsce publish --packagePath ../mobile-code-companion-%npm_package_version%-win32-x64.vsix",
+    "publish:ovsx": "ovsx publish ../mobile-code-companion-%npm_package_version%-win32-x64.vsix"
+  },
+  "dependencies": {
+    "@anthropic-ai/claude-agent-sdk": "^0.3.199",
+    "qrcode": "^1.5.4",
+    "ws": "^8.21.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.19.43",
+    "@types/qrcode": "^1.5.6",
+    "@types/vscode": "^1.90.0",
+    "@types/ws": "^8.18.1",
+    "@vscode/vsce": "^3.9.2",
+    "esbuild": "^0.28.1",
+    "ovsx": "^1.0.2",
+    "typescript": "^5.9.3",
+    "vitest": "^4.1.9"
+  }
+}

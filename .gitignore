@@ -1,0 +1,8 @@
+node_modules/
+dist/
+out/
+*.vsix
+extension/webapp-dist/
+.vscode-test/
+*.log
+.DS_Store
