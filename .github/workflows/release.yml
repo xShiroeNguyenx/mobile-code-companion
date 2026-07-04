@@ -100,15 +100,17 @@ jobs:
         working-directory: extension
         run: npx vsce package --target ${{ matrix.target }} --out ../mobile-code-companion-${{ github.ref_name }}-${{ matrix.target }}.vsix
 
+      # --skip-duplicate: target/version đã có trên store thì bỏ qua thay vì fail
+      # → re-tag chạy lại workflow an toàn (idempotent).
       - name: Publish to Marketplace
         if: ${{ env.VSCE_PAT != '' }}
         working-directory: extension
-        run: npx vsce publish --packagePath ../mobile-code-companion-${{ github.ref_name }}-${{ matrix.target }}.vsix
+        run: npx vsce publish --skip-duplicate --packagePath ../mobile-code-companion-${{ github.ref_name }}-${{ matrix.target }}.vsix
 
       - name: Publish to Open VSX
         if: ${{ env.OVSX_PAT != '' }}
         working-directory: extension
-        run: npx ovsx publish ../mobile-code-companion-${{ github.ref_name }}-${{ matrix.target }}.vsix
+        run: npx ovsx publish --skip-duplicate ../mobile-code-companion-${{ github.ref_name }}-${{ matrix.target }}.vsix
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
